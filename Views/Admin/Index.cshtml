@@ -1,0 +1,89 @@
+@{
+    ViewData["Title"] = "Admin Page";
+}
+
+<h2 class="border-bottom">Admin Dashboard</h2>
+
+<h3>Add Product</h3>
+<form asp-action="CreateProduct" class="border-bottom">
+
+    <div class="input-group mb-3">
+        <input type="text" name="Name" class="form-control" placeholder="Name" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+
+    <div class="input-group mb-3">
+        <input type="text" name="Description" class="form-control" placeholder="Description" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+
+    <div class="input-group mb-3">
+        <input type="number" name="Amount" class="form-control" placeholder="Amount" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+
+    <div class="input-group mb-3">
+        <input type="number" name="Price" class="form-control" placeholder="Price" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+
+    <div class="input-group mb-3">
+        <input type="text" name="Images" class="form-control" placeholder="Images" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+
+    <input type="submit" class="btn btn-primary m-3"/>
+</form>
+
+<form>
+    <h3>Products:</h3>
+
+    <div class="d-flex p-2 flex-wrap border-bottom">
+        @foreach (var product in (List<Product>)ViewData["products"]!)
+        {
+            <div class="card" style="width: 18rem;">
+                <button asp-action="DeleteProduct" type="submit" class="btn btn-danger" name="id" value="@product.Id">X</button>
+                <img class="card-img-top" src="@product.Images" alt="">
+                <div class="card-body">
+                    <h5 class="card-title">@product.Name</h5>
+                    <p class="card-text">@product.Description</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">@product.Amount</li>
+                    <li class="list-group-item">@product.Price</li>
+                </ul>
+            </div>
+        }
+    </div>
+    <h3>Users:</h3>
+
+    <div class="d-flex p-2 flex-wrap border-bottom">
+        @foreach (var user in (List<User>)ViewData["users"]!)
+        {
+            <div class="card" style="width: 18rem;">
+                <button asp-action="DeleteUser" type="submit" class="btn btn-danger" name="id" value="@user.Id">X</button>
+                <div class="card-body">
+                    <h5 class="card-title">@user.Email</h5>
+                    <p class="card-text">IsAdmin: @user.IsAdmin</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    @foreach (var order in user.Orders)
+                    {
+                        <li class="list-group-item">@order.Date.ToString("h:mm:ss tt zz"), IsComplete: @order.IsCompleted</li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+
+    <div class="dropdown m-3">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Choose Active Database
+        </button>
+        <ul class="dropdown-menu">
+            @foreach (var db in (List<string>)ViewData["dbs"]!)
+            {
+                <li>
+                    <button asp-action="ChangeDb" name="name" value="@db" class="dropdown-item" href="#">@db</button>
+                </li>
+            }
+        </ul>
+    </div>
+</form>
+
+<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>

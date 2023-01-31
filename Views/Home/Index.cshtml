@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+
+    bool? ProductInWarenkorb(Product product)
+    {
+        if (ViewData["user"] is not User user)
+            return null;
+        var userAlreadyOrderdProduct = product.Orders.FirstOrDefault(x => x.UserId == user.Id && x.IsCompleted == false) is not null;
+        return userAlreadyOrderdProduct;
+    }
+}
+
+<form class="text-center">
+    <h1 class="display-4">Welcome to the Online Shop</h1>
+    <p>Products:</p>
+    <div class="flex-row flex-wrap gap-4" style="display: flex">
+        @foreach (var product in (List<Product>)ViewData["products"]!)
+        {
+            <div class="card" style="width: 18rem;">
+                @switch (ProductInWarenkorb(product))
+                {
+                    case true:
+                        <button asp-action="RemoveFromOrder" type="submit" class="btn btn-danger" name="id" value="@product.Id">Remove from cart</button>
+                        break;
+                    case false:
+                        <button asp-action="AddToOrder" type="submit" class="btn btn-success" name="id" value="@product.Id">Add to cart</button>
+                        break;
+                    case null:
+                        break;
+                }
+                <img class="card-img-top" src="@product.Images" alt="">
+                <div class="card-body">
+                    <h5 class="card-title">@product.Name</h5>
+                    <p class="card-text">@product.Description</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">@product.Amount Items remaining</li>
+                    <li class="list-group-item">@product.Price Fr.</li>
+                    <li class="list-group-item">Vestibulum at eros</li>
+                </ul>
+            </div>
+        }
+    </div>
+
+    @if (ViewData["user"] is not null && ViewData["order"] is not null)
+    {
+        <button asp-action="Checkout" type="submit" class="btn btn-success" name="id">Checkout (@ViewData["totalPrice"] Fr.)</button>
+    }
+                
+</form>

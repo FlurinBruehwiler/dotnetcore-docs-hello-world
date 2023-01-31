@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Checkout Complete";
+}
+
+<div class="d-flex p-2 flex-wrap">
+    @foreach (var product in (List<Product>)ViewData["products"]!)
+    {
+        <div class="card" style="width: 18rem;">
+            <img class="card-img-top" src="@product.Images" alt="">
+            <div class="card-body">
+                <h5 class="card-title">@product.Name</h5>
+                <p class="card-text">@product.Description</p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">@product.Price Fr.</li>
+            </ul>
+        </div>
+    }
+</div>
